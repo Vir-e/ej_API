@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing import Union
 from models.book_DTO import BookDTO
 from sqlalchemy.orm import Session
@@ -11,9 +11,11 @@ router = APIRouter()
 
 
 @router.get("/books/", response_model=List[BookDTO])
-def get_books(db: Session = Depends(get_db)):
+def get_books(db: Session = Depends(get_db),
+            offset: int = Query(0),
+            limit: int = Query(10)):
     book_service = BooksService()
-    books = book_service.get_books(db)
+    books = book_service.get_books(db, limit=limit, offset=offset)
     return books
 
 
@@ -21,11 +23,14 @@ def get_books(db: Session = Depends(get_db)):
 
 @router.get("/books/{book_id}", response_model=BookDTO)
 def get_book(book_id: int, Session = Depends(get_db)):
-    book_service = BooksService()
-    book = book_service.get_book(book_id, Session)
-    if book is None:
-        raise HTTPException(status_code=404, detail="Book not found")
-    return book
+    try:
+        book_service = BooksService()
+        book = book_service.get_book(book_id, Session)
+        if book is None:
+            raise HTTPException(status_code=404, detail="Book not found")
+        return book
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail="Database error")
 
 
 @router.post("/books/")
@@ -34,16 +39,18 @@ def create_book(book_data: BookDTO, db: Session = Depends(get_db)):
     book_create = book_service.create_book(book_data, db)
     if book_create is None:
         raise HTTPException(status_code=400, detail="Book creation failed")
-    return book_create
+    return book_data
 
-# TODO SEGUIR REPASANDO FLUJO DESDE AQUI, CONTROLANDO EXCEPCIONES Y RESPUESTAS
-# TODO IMPLEMENTAR LOGIN Y MIRAR AUTENTICACIÓN Y AUTORIZACIÓN CON CONTRASEÑAS
-# TODO PAGINACION EN EL GET LIBROS
+
+# TODO EXPLICACION CONFIG CREDENCIALES ENCRIPTADAS EN ARCHIVOS, DESENCRIPTAR EN TIEMPO DE EJECUCION CON EL SECRET EN VARIABLES DE ENTORNO, EXPLICACION DTO/DOMINIO
+# TODO TEST UNITARIO VALIDACION DTO
 
 @router.put("/books/{book_id}")
 def update_book(book_id: int, book_data: BookDTO, db: Session = Depends(get_db)):
     book_service = BooksService()
     book = book_service.update_book(book_id, book_data, db)
+    if book is None:
+        raise HTTPException(status_code=404, detail="Book not found")
     return {"book_id": book_id, "book": book}
 
 
@@ -51,8 +58,8 @@ def update_book(book_id: int, book_data: BookDTO, db: Session = Depends(get_db))
 @router.delete("/books/{book_id}")
 def delete_book(book_id: int, db: Session = Depends(get_db)):
     book_service = BooksService()
-    book = book_service.delete_book(book_id, db)
-    if book is None:
-        return {"message": "Book not found"}
-    return {"book_id": book_id, "message": "Book deleted"}  
+    book_deleted = book_service.delete_book(book_id, db)
+    if book_deleted is False:
+        raise HTTPException(status_code=404, detail="Book deleted failed")
+    return True 
 

@@ -1,10 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, StrictStr, StrictFloat
 from datetime import date
 
 class BookDTO(BaseModel):
-    title: str
-    author: str
+    title: StrictStr
+    author: StrictStr
     publication_date: date
-    price: float
+    price: StrictFloat
 
 

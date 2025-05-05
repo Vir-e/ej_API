@@ -18,11 +18,11 @@ class BookCRUD:
         except SQLAlchemyError as e:
             print("Error:", e)
             db.rollback()
-            return None
+            raise RuntimeError("Database error")
         except Exception as e:
             print("Error:", e)
             db.rollback()
-            return None
+            raise RuntimeError("Database error")
         return book
     
 
@@ -34,21 +34,28 @@ class BookCRUD:
                 return BookMapper.convert_dao_to_dto(book)
             else:
                 return None
+        except SQLAlchemyError as e:
+            print("Error:", e)
+            raise RuntimeError("Database error")
         except Exception as e:
             print("Error:", e)
-            return None
+            raise RuntimeError("Database error")
+
         
 
-    def get_all_books(self, db: Session):
+    def get_all_books(self, db: Session, limit: int = 10, offset: int = 0):
         try:
-            books = db.query(Book).all()
+            books = db.query(Book).offset(offset).limit(limit).all()
             if books:
                 return [BookMapper.convert_dao_to_dto(book) for book in books]
             else:
                 return []
+        except SQLAlchemyError as e:
+            print("Error:", e)
+            raise RuntimeError("Database error")
         except Exception as e:
             print("Error:", e)
-            return None
+            raise RuntimeError("Database error")
 
 
 
@@ -57,17 +64,19 @@ class BookCRUD:
             book = db.query(Book).filter_by(id=book_id).first()
             if book:
                 for key, value in book_data.items():
-                    print("Key:", key)
-                    print("Value:", value)
                     setattr(book, key, value)
                 db.commit()
                 return BookMapper.convert_dao_to_dto(book)
             else:
                 return None
+        except SQLAlchemyError as e:
+            print("Error:", e)
+            db.rollback()
+            raise RuntimeError("Database error")
         except Exception as e:
             print("Error:", e)
             db.rollback()
-            return None
+            raise RuntimeError("Database error")
 
 
 
@@ -79,8 +88,12 @@ class BookCRUD:
                 db.commit()
                 return True
             else:
-                return None
+                return False
+        except SQLAlchemyError as e:
+            print("Error:", e)
+            db.rollback()
+            raise RuntimeError("Database error")
         except Exception as e:
             print("Error:", e)
             db.rollback()
-            return False
+            raise RuntimeError("Database error")

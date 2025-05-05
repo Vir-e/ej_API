@@ -7,6 +7,7 @@ name = "pypi"
 fastapi = {extras = ["standard"], version = "0.115.12"}
 psycopg2-binary = "2.9.10"
 sqlalchemy = "2.0.40"
+pytest = "8.3.5"
 
 [dev-packages]
 

@@ -12,11 +12,3 @@ class BookMapper:
             price=book_dao.price
         )
     
-    @staticmethod
-    def convert_dto_to_dao(book_dto: BookDTO) -> Book:
-        return Book(
-            title=book_dto.title,
-            author=book_dto.author,
-            publication_date=book_dto.publication_date,
-            price=book_dto.price
-        )
