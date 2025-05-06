@@ -1,6 +1,4 @@
-from typing import Union
 from fastapi import FastAPI
-from services.books_services import BooksService
 from routes import router
 
 
