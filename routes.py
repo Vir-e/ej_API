@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from typing import Union
 from models.book_DTO import BookDTO
 from sqlalchemy.orm import Session
 from utils.dependencies import get_db
@@ -20,7 +19,6 @@ def get_books(db: Session = Depends(get_db),
 
 
 
-
 @router.get("/books/{book_id}", response_model=BookDTO)
 def get_book(book_id: int, Session = Depends(get_db)):
     try:
@@ -33,6 +31,7 @@ def get_book(book_id: int, Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Database error")
 
 
+
 @router.post("/books/")
 def create_book(book_data: BookDTO, db: Session = Depends(get_db)):
     book_service = BooksService()
@@ -42,8 +41,6 @@ def create_book(book_data: BookDTO, db: Session = Depends(get_db)):
     return book_data
 
 
-# TODO EXPLICACION CONFIG CREDENCIALES ENCRIPTADAS EN ARCHIVOS, DESENCRIPTAR EN TIEMPO DE EJECUCION CON EL SECRET EN VARIABLES DE ENTORNO, EXPLICACION DTO/DOMINIO
-# TODO TEST UNITARIO VALIDACION DTO
 
 @router.put("/books/{book_id}")
 def update_book(book_id: int, book_data: BookDTO, db: Session = Depends(get_db)):
@@ -51,7 +48,7 @@ def update_book(book_id: int, book_data: BookDTO, db: Session = Depends(get_db))
     book = book_service.update_book(book_id, book_data, db)
     if book is None:
         raise HTTPException(status_code=404, detail="Book not found")
-    return {"book_id": book_id, "book": book}
+    return book_data
 
 
 

@@ -1,8 +1,5 @@
 from repository.books_crud import BookCRUD
-from repository.db_config import Database
 from models.book_DTO import BookDTO
-#from models.book_DAO import Book
-from datetime import date
 from sqlalchemy.orm import Session
 
 
@@ -15,11 +12,9 @@ class BooksService:
         try:
             book_create = book_crud.create_book(book_dto.__dict__, db)
         except RuntimeError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         return book_create
 
 
@@ -28,11 +23,9 @@ class BooksService:
         try:
             books = book_crud.get_all_books(db, limit, offset)
         except RuntimeError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         return books
     
 
@@ -41,11 +34,9 @@ class BooksService:
         try:
             book = book_crud.get_book(book_id, db)
         except RuntimeError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         return book
     
 
@@ -54,11 +45,9 @@ class BooksService:
         try:
             book = book_crud.update_book(book_id, book_dto.__dict__, db)
         except RuntimeError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         return book
     
 
@@ -67,11 +56,9 @@ class BooksService:
         try:
             book_deleted = book_crud.delete_book(book_id, db)
         except RuntimeError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         return book_deleted
 
 

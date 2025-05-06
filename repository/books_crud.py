@@ -16,13 +16,11 @@ class BookCRUD:
             db.add(book)
             db.commit()
         except SQLAlchemyError as e:
-            print("Error:", e)
             db.rollback()
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
             db.rollback()
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         return book
     
 
@@ -35,11 +33,9 @@ class BookCRUD:
             else:
                 return None
         except SQLAlchemyError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
 
         
 
@@ -51,11 +47,9 @@ class BookCRUD:
             else:
                 return []
         except SQLAlchemyError as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
 
 
 
@@ -70,13 +64,11 @@ class BookCRUD:
             else:
                 return None
         except SQLAlchemyError as e:
-            print("Error:", e)
             db.rollback()
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
             db.rollback()
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
 
 
 
@@ -90,10 +82,8 @@ class BookCRUD:
             else:
                 return False
         except SQLAlchemyError as e:
-            print("Error:", e)
             db.rollback()
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
         except Exception as e:
-            print("Error:", e)
             db.rollback()
-            raise RuntimeError("Database error")
+            raise RuntimeError("Database error") from e
