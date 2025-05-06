@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from models.book_DTO import BookDTO
 from sqlalchemy.orm import Session
-from utils.dependencies import get_db
+from dependencies.dependencies import get_db
 from services.books_services import BooksService
 from typing import List
 
